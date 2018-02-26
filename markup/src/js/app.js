@@ -6,7 +6,7 @@ import StarSky from './modules/star';
 
   $(() => {
 
-    var newSky = new StarSky('sky');
+    var newSky = new StarSky('.sky');
 
   });
 
