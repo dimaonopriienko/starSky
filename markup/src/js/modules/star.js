@@ -28,7 +28,9 @@ var StarSky = function (container, options) {
       maxStarLife: 7500,
       minStarSize: 3,
       maxStarSize: 18,
-      borderRadius: 50,
+      borderRadius: '50%',
+      colors: ["#ffffff", "#ffe9c4", "#d4fbff"],
+      text: '',
     };
 
     this.settings = $.extend({}, this.defaults, options);
@@ -48,14 +50,16 @@ var StarSky = function (container, options) {
         let x = Math.round(Math.random() * this.screenWidth);
         let y = Math.round(Math.random() * this.screenHeight);
         let starSize = random(this.settings.minStarSize, this.settings.maxStarSize);
-        let star = new Star(x, y, starSize,  i);
+        let starColor = this.settings.colors[random(0, this.settings.colors.length)];
+
+        let star = new Star(x, y, starSize, starColor, this.settings.borderRadius, this.settings.text, i);
 
         stars.push(star);
       }
     }
 
     $.each(stars, function (index, singleStar) {
-      $(container).append(singleStar.draw(index).find('[data-role="star"]').animate({ //not div. but data-attr (data-role)
+      $(container).append(singleStar.draw(index).find('[data-role="star"]').animate({
         'opacity': '1',
       }, random(itemsGenerator.settings.minStarLife, itemsGenerator.settings.maxStarLife), function () {
         $(this).animate({
@@ -69,24 +73,23 @@ var StarSky = function (container, options) {
 
   }
 
-  function Star(x, y, starSize) {
+  function Star(x, y, starSize, starColor, borderRadius, text) {
 
     this.x = parseInt(x);
     this.y = parseInt(y);
     this.starWidth = parseInt(starSize);
     this.starHeight = parseInt(starSize);
-    this.starColors = ["#ffffff", "#ffe9c4", "#d4fbff"];
 
-    this.draw = function(index) {
+    this.draw = (index) => {
 
-      var starBlock = $('<div />').html(`<div class="star-${index}" data-role="star"></div>`); //`<div class="lite-start-${index}"></div>`. add user content inside div (as option)
+      var starBlock = $('<div />').html(`<div class="star-${index}" data-role="star">${text}</div>`); //`<div class="lite-start-${index}"></div>`. add user content inside div (as option)
 
       $(starBlock).find('div').css({
         'position': 'absolute',
-        'background': this.starColors[random(0, this.starColors.length)],
+        'background': starColor,
         'left': this.x,
         'top': this.y,
-        'border-radius': '50%',
+        'border-radius': borderRadius,
         'width': this.starWidth,
         'height': this.starHeight,
         'opacity': '0'
