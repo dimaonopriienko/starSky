@@ -6,3 +6,10 @@
   right: 0;
   background: #000;
 }
+[data-role='star'] {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+}

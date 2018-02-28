@@ -21,7 +21,8 @@ var StarSky = function (container, options) {
     const itemsGenerator = this;
     let stars = [];
 
-    this.defaults = {
+    let defaults = {
+      className: 'star',
       minStarsCount: 40,
       maxStarsCount: 80,
       minStarLife: 3500,
@@ -35,25 +36,25 @@ var StarSky = function (container, options) {
       endOpacity: 1,
     };
 
-    this.settings = $.extend({}, this.defaults, options);
+    let settings = $.extend({}, defaults, options);
 
-    this.screenHeight = $(window).height() - this.settings.maxStarSize;
-    this.screenWidth = $(window).width() - this.settings.maxStarSize;
+    let screenHeight = $(window).height() - settings.maxStarSize;
+    let screenWidth = $(window).width() - settings.maxStarSize;
 
-    this.starsCount = random(this.settings.minStarsCount, this.settings.maxStarsCount);
+    let starsCount = random(settings.minStarsCount, settings.maxStarsCount);
     stars = stars.filter((star) => {
       return star.died !== true;
     });
 
-    if (stars.length < this.starsCount) {
-      for (let i = 0; i < this.starsCount; i++) {
+    if (stars.length < starsCount) {
+      for (let i = 0; i < starsCount; i++) {
 
-        let x = Math.round(Math.random() * this.screenWidth);
-        let y = Math.round(Math.random() * this.screenHeight);
-        let starSize = random(this.settings.minStarSize, this.settings.maxStarSize);
-        let starColor = this.settings.colors[random(0, this.settings.colors.length)];
+        let x = Math.round(Math.random() * screenWidth);
+        let y = Math.round(Math.random() * screenHeight);
+        let starSize = random(settings.minStarSize, settings.maxStarSize);
+        let starColor = settings.colors[random(0, settings.colors.length - 1)];
 
-        let star = new Star(x, y, starSize, starColor, this.settings.borderRadius, this.settings.text, this.settings.startOpacity);
+        let star = new Star(x, y, starSize, starColor, settings.borderRadius, settings.text, settings.startOpacity, settings.className);
 
         stars.push(star);
       }
@@ -61,11 +62,11 @@ var StarSky = function (container, options) {
 
     $.each(stars, (index, singleStar) => {
       $(container).append(singleStar.draw(index).find('[data-role="star"]').animate({
-        'opacity': itemsGenerator.settings.endOpacity,
-      }, random(itemsGenerator.settings.minStarLife, itemsGenerator.settings.maxStarLife), function () {
+        'opacity': settings.endOpacity,
+      }, random(settings.minStarLife, settings.maxStarLife), function () {
         $(this).animate({
-          'opacity': itemsGenerator.settings.startOpacity,
-        }, random(itemsGenerator.settings.minStarLife, itemsGenerator.settings.maxStarLife), function () {
+          'opacity': settings.startOpacity,
+        }, random(settings.minStarLife, settings.maxStarLife), function () {
           singleStar.died = true;
           $(this).remove();
         });
@@ -74,26 +75,26 @@ var StarSky = function (container, options) {
 
   }
 
-  function Star(x, y, starSize, starColor, borderRadius, text, startOpacity) {
+  function Star(x, y, starSize, starColor, borderRadius, text, startOpacity, className) {
 
-    this.x = parseInt(x);
-    this.y = parseInt(y);
-    this.starWidth = parseInt(starSize);
-    this.starHeight = parseInt(starSize);
+    let xPoint = parseInt(x);
+    let yPoint = parseInt(y);
+    let starWidth = parseInt(starSize);
+    let starHeight = parseInt(starSize);
 
     this.draw = (index) => {
 
-      var starBlock = $('<div />').html(`<div class="star-${index}" data-role="star">${text}</div>`); //`<div class="lite-start-${index}"></div>`. add user content inside div (as option)
+      var starBlock = $('<div />').html(`<div class="${className}" data-role="star">${text}</div>`); //`<div class="lite-start-${index}"></div>`. add user content inside div (as option)
 
       $(starBlock).find('div').css({
         'position': 'absolute',
         'background': starColor,
-        'left': this.x,
-        'top': this.y,
+        'left': xPoint,
+        'top': yPoint,
         'border-radius': borderRadius,
-        'width': this.starWidth,
-        'height': this.starHeight,
-        'opacity': '0'
+        'width': starWidth,
+        'height': starHeight,
+        'opacity': startOpacity
       });
 
       return starBlock;
