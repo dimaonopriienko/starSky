@@ -31,6 +31,8 @@ var StarSky = function (container, options) {
       borderRadius: '50%',
       colors: ["#ffffff", "#ffe9c4", "#d4fbff"],
       text: '',
+      startOpacity: 0,
+      endOpacity: 1,
     };
 
     this.settings = $.extend({}, this.defaults, options);
@@ -52,18 +54,18 @@ var StarSky = function (container, options) {
         let starSize = random(this.settings.minStarSize, this.settings.maxStarSize);
         let starColor = this.settings.colors[random(0, this.settings.colors.length)];
 
-        let star = new Star(x, y, starSize, starColor, this.settings.borderRadius, this.settings.text, i);
+        let star = new Star(x, y, starSize, starColor, this.settings.borderRadius, this.settings.text, this.settings.startOpacity);
 
         stars.push(star);
       }
     }
 
-    $.each(stars, function (index, singleStar) {
+    $.each(stars, (index, singleStar) => {
       $(container).append(singleStar.draw(index).find('[data-role="star"]').animate({
-        'opacity': '1',
+        'opacity': itemsGenerator.settings.endOpacity,
       }, random(itemsGenerator.settings.minStarLife, itemsGenerator.settings.maxStarLife), function () {
         $(this).animate({
-          'opacity': '0',
+          'opacity': itemsGenerator.settings.startOpacity,
         }, random(itemsGenerator.settings.minStarLife, itemsGenerator.settings.maxStarLife), function () {
           singleStar.died = true;
           $(this).remove();
@@ -73,7 +75,7 @@ var StarSky = function (container, options) {
 
   }
 
-  function Star(x, y, starSize, starColor, borderRadius, text) {
+  function Star(x, y, starSize, starColor, borderRadius, text, startOpacity) {
 
     this.x = parseInt(x);
     this.y = parseInt(y);
