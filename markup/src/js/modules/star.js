@@ -41,7 +41,6 @@ var StarSky = function (container, options) {
     this.screenWidth = $(window).width() - this.settings.maxStarSize;
 
     this.starsCount = random(this.settings.minStarsCount, this.settings.maxStarsCount);
-
     stars = stars.filter((star) => {
       return star.died !== true;
     });
