@@ -1,12 +1,4 @@
-/**
- * Read;
- *
- * ES6 (arrow functions, let, const, spreadOperator)
- * ESLINT validation
- * bind apply call context this self (why we need to use), arrow function (why we don't need to use self)
- **/
-
-var StarSky = function (container, options) {
+let StarSky = (container, options) => {
 
   const FPS = 5000;
 
@@ -18,10 +10,8 @@ var StarSky = function (container, options) {
 
   function starGenerate() {
 
-    const itemsGenerator = this;
-    let stars = [];
-
     let defaults = {
+      starTemplate: '<div class="{{className}}" data-role="star">"{{text}}"</div>',
       className: 'star',
       minStarsCount: 40,
       maxStarsCount: 80,
@@ -31,17 +21,28 @@ var StarSky = function (container, options) {
       maxStarSize: 18,
       borderRadius: '50%',
       colors: ["#ffffff", "#ffe9c4", "#d4fbff"],
-      text: '',
+      text: [''],
       startOpacity: 0,
       endOpacity: 1,
+      // getStarPosition: (starQty) => {
+      //   return {
+      //     x: Math.random(),
+      //     y: Math.random(),
+      //   }
+      // },
+      // animateStarAppearance: (starEl, starQty) => {
+      //
+      // }
     };
 
     let settings = $.extend({}, defaults, options);
 
     let screenHeight = $(window).height() - settings.maxStarSize;
     let screenWidth = $(window).width() - settings.maxStarSize;
-
     let starsCount = random(settings.minStarsCount, settings.maxStarsCount);
+
+    let stars = [];
+
     stars = stars.filter((star) => {
       return star.died !== true;
     });
@@ -53,8 +54,27 @@ var StarSky = function (container, options) {
         let y = Math.round(Math.random() * screenHeight);
         let starSize = random(settings.minStarSize, settings.maxStarSize);
         let starColor = settings.colors[random(0, settings.colors.length - 1)];
+        let starText = settings.text[random(0, settings.text.length - 1)];
+        let className = settings.className;
+        let starTemplate = settings.starTemplate;
+        //let star = new Star(x, y, starSize, starColor, settings.borderRadius, starText, settings.startOpacity, className);
 
-        let star = new Star(x, y, starSize, starColor, settings.borderRadius, settings.text, settings.startOpacity, settings.className);
+        let star = new Star({
+          position: {
+            x,
+            y
+          },
+          styles: {
+            width: starSize,
+            height: starSize,
+            background: starColor,
+            borderRadius: settings.borderRadius,
+            opacity: settings.startOpacity,
+          },
+          starText,
+          className,
+          starTemplate
+        });
 
         stars.push(star);
       }
@@ -75,27 +95,25 @@ var StarSky = function (container, options) {
 
   }
 
-  function Star(x, y, starSize, starColor, borderRadius, text, startOpacity, className) {
+  function Star({position, styles, starText, className, starTemplate}) {
 
-    let xPoint = parseInt(x);
-    let yPoint = parseInt(y);
-    let starWidth = parseInt(starSize);
-    let starHeight = parseInt(starSize);
+    let xPoint = position.x;
+    let yPoint = position.y;
 
-    this.draw = (index) => {
+    this.draw = () => {
 
-      var starBlock = $('<div />').html(`<div class="${className}" data-role="star">${text}</div>`); //`<div class="lite-start-${index}"></div>`. add user content inside div (as option)
+      let starBlock = $('<div />').html(starTemplate.replace('{{className}}', className).replace('{{text}}',starText));
+      //let starBlock = $('<div />').html(`<div class="${className}" data-role="star">${starText}</div>`);
 
-      $(starBlock).find('div').css({
-        'position': 'absolute',
-        'background': starColor,
-        'left': xPoint,
-        'top': yPoint,
-        'border-radius': borderRadius,
-        'width': starWidth,
-        'height': starHeight,
-        'opacity': startOpacity
-      });
+      $(starBlock).find('[data-role="star"]').css(
+        $.extend({},
+          styles,
+          {
+          'position': 'absolute',
+          'left': xPoint,
+          'top': yPoint,
+          })
+      );
 
       return starBlock;
     };
