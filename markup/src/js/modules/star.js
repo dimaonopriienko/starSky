@@ -11,7 +11,7 @@ let StarSky = (container, options) => {
   function starGenerate() {
 
     let defaults = {
-      starTemplate: '<div class="{{className}}" data-role="star">"{{text}}"</div>',
+      starTemplate: '<div class="{{className}}" data-role="star">{{text}}</div>',
       className: 'star',
       minStarsCount: 40,
       maxStarsCount: 80,
@@ -24,21 +24,16 @@ let StarSky = (container, options) => {
       text: [''],
       startOpacity: 0,
       endOpacity: 1,
-      // getStarPosition: (starQty) => {
-      //   return {
-      //     x: Math.random(),
-      //     y: Math.random(),
-      //   }
-      // },
-      // animateStarAppearance: (starEl, starQty) => {
-      //
-      // }
+      getStarPosition: (settings, starQty) => {
+        return {
+          x: Math.round(Math.random() * ($(window).width() - settings.maxStarSize)),
+          y: Math.round(Math.random() * ($(window).height() - settings.maxStarSize)),
+        };
+      }
     };
 
     let settings = $.extend({}, defaults, options);
 
-    let screenHeight = $(window).height() - settings.maxStarSize;
-    let screenWidth = $(window).width() - settings.maxStarSize;
     let starsCount = random(settings.minStarsCount, settings.maxStarsCount);
 
     let stars = [];
@@ -49,21 +44,14 @@ let StarSky = (container, options) => {
 
     if (stars.length < starsCount) {
       for (let i = 0; i < starsCount; i++) {
-
-        let x = Math.round(Math.random() * screenWidth);
-        let y = Math.round(Math.random() * screenHeight);
         let starSize = random(settings.minStarSize, settings.maxStarSize);
         let starColor = settings.colors[random(0, settings.colors.length - 1)];
         let starText = settings.text[random(0, settings.text.length - 1)];
         let className = settings.className;
         let starTemplate = settings.starTemplate;
-        //let star = new Star(x, y, starSize, starColor, settings.borderRadius, starText, settings.startOpacity, className);
 
         let star = new Star({
-          position: {
-            x,
-            y
-          },
+          position: settings.getStarPosition(settings),
           styles: {
             width: starSize,
             height: starSize,
@@ -103,7 +91,6 @@ let StarSky = (container, options) => {
     this.draw = () => {
 
       let starBlock = $('<div />').html(starTemplate.replace('{{className}}', className).replace('{{text}}',starText));
-      //let starBlock = $('<div />').html(`<div class="${className}" data-role="star">${starText}</div>`);
 
       $(starBlock).find('[data-role="star"]').css(
         $.extend({},
