@@ -266,6 +266,26 @@
     cfg.task.copyFoldersProduction
   ));
 
+
+  var browserify  = require('browserify');
+  var babelify   = require('babelify');
+  var source      = require('vinyl-source-stream');
+  var buffer      = require('vinyl-buffer');
+  var uglify      = require('gulp-uglify');
+
+
+  gulp.task('buildLibs', function () {
+    // app.js is your main JS file with all your module inclusions
+    return browserify({entries: './libs/starSky/starSkyJQuery.js', debug: true})
+      .transform('babelify', {
+        presets: ['es2015']
+      })
+      .bundle()
+      .pipe(source('starSkyJQuery.js'))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe(gulp.dest('./libs/starSky/dist/'));
+  });
   /**
    * Remove image(s) from build folder if corresponding
    * images were deleted from source folder

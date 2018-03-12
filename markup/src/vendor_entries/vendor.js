@@ -4,5 +4,5 @@
 
 module.exports = [
   './node_modules/jquery/dist/jquery.js',
-  // './src/js/modules/jQueryStar.js'
+  //'./libs/starSky/dist/starSky.js'
 ];

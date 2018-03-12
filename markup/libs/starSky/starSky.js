@@ -1,7 +1,5 @@
 let StarSky = (container, options) => {
 
-  const FPS = 5000;
-
   if(!$(container).length) {
     return false;
   }
@@ -31,7 +29,7 @@ let StarSky = (container, options) => {
 
   let settings = $.extend({}, defaults, options);
 
-  setInterval(starGenerate, FPS);
+  setInterval(starGenerate, settings.fps);
 
   function starGenerate() {
 
