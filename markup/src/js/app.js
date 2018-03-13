@@ -1,5 +1,5 @@
-import StarSky from '../../libs/starSky/starSky';
-//import StarSkyJQuery from '../../libs/starSky/starSkyJQuery';
+import StarSky from '../../libs/starSky/starsky';
+//import wrapper from '../../libs/starSky/starsky.jquery';
 
 (($) => {
  'use strict';

@@ -24,6 +24,21 @@ let StarSky = (container, options) => {
         x: Math.round(Math.random() * ($(window).width() - settings.maxStarSize)),
         y: Math.round(Math.random() * ($(window).height() - settings.maxStarSize)),
       };
+    },
+    animateHandler: (elem, remove, settings) => {
+      elem.animate({
+        'opacity': settings.endOpacity
+      }, random(settings.minStarLife, settings.maxStarLife), function(){
+
+        remove();
+      });
+      // elem.animate({
+      //   'opacity': settings.endOpacity,
+      // }, random(settings.minStarLife, settings.maxStarLife), function () {
+      //   $(this).animate({
+      //     'opacity': settings.startOpacity,
+      //   }, random(settings.minStarLife, settings.maxStarLife), remove);
+      // })
     }
   };
 
@@ -68,16 +83,14 @@ let StarSky = (container, options) => {
     }
 
     $.each(stars, (index, singleStar) => {
-      $(container).append(singleStar.draw(index).find('[data-role="star"]').animate({
-        'opacity': settings.endOpacity,
-      }, random(settings.minStarLife, settings.maxStarLife), function () {
-        $(this).animate({
-          'opacity': settings.startOpacity,
-        }, random(settings.minStarLife, settings.maxStarLife), function () {
-          singleStar.died = true;
-          $(this).remove();
-        });
-      }));
+      let elem = $(container).append(singleStar.draw(index)).find('[data-role="star"]');
+let s= () => {
+
+  singleStar.died = true;
+
+  elem.parent().remove();
+};
+      settings.animateHandler(elem, s , settings);
     });
 
   }
