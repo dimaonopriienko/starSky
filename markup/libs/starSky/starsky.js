@@ -19,7 +19,7 @@ let StarSky = (container, options) => {
     startOpacity: 0,
     endOpacity: 1,
     fps: 5000,
-    getStarPosition: (settings, starQty) => {
+    getStarPosition: (settings) => {
       return {
         x: Math.round(Math.random() * ($(window).width() - settings.maxStarSize)),
         y: Math.round(Math.random() * ($(window).height() - settings.maxStarSize)),
@@ -27,18 +27,12 @@ let StarSky = (container, options) => {
     },
     animateHandler: (elem, remove, settings) => {
       elem.animate({
-        'opacity': settings.endOpacity
-      }, random(settings.minStarLife, settings.maxStarLife), function(){
-
-        remove();
+        'opacity': settings.endOpacity,
+      }, random(settings.minStarLife, settings.maxStarLife), function () {
+        $(this).animate({
+          'opacity': settings.startOpacity,
+        }, random(settings.minStarLife, settings.maxStarLife), remove);
       });
-      // elem.animate({
-      //   'opacity': settings.endOpacity,
-      // }, random(settings.minStarLife, settings.maxStarLife), function () {
-      //   $(this).animate({
-      //     'opacity': settings.startOpacity,
-      //   }, random(settings.minStarLife, settings.maxStarLife), remove);
-      // })
     }
   };
 
@@ -83,14 +77,14 @@ let StarSky = (container, options) => {
     }
 
     $.each(stars, (index, singleStar) => {
-      let elem = $(container).append(singleStar.draw(index)).find('[data-role="star"]');
-let s= () => {
+      let elem = singleStar.draw(index).appendTo($(container)).find('[data-role="star"]');
 
-  singleStar.died = true;
+      settings.animateHandler(elem, () => {
 
-  elem.parent().remove();
-};
-      settings.animateHandler(elem, s , settings);
+        singleStar.died = true;
+        elem.parent().remove();
+
+      } , settings);
     });
 
   }

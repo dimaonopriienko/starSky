@@ -276,12 +276,12 @@
 
   gulp.task('buildLibs', function () {
     // app.js is your main JS file with all your module inclusions
-    return browserify({entries: './libs/starSky/starSkyJQuery.js', debug: true})
+    return browserify({entries: './libs/starSky/starsky.jquery.js', debug: true})
       .transform('babelify', {
         presets: ['es2015']
       })
       .bundle()
-      .pipe(source('starSkyJQuery.js'))
+      .pipe(source('starsky.jquery.min.js'))
       .pipe(buffer())
       .pipe(uglify())
       .pipe(gulp.dest('./libs/starSky/dist/'));
